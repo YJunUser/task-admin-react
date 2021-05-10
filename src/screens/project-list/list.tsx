@@ -1,4 +1,5 @@
 import { Table } from "antd";
+import dayjs from "dayjs";
 import React from "react";
 import { User } from "utils/type";
 import { Project } from "utils/type";
@@ -21,12 +22,27 @@ export const List = ({ list, users }: ListProps) => {
           key: "name",
         },
         {
+          title: "部门",
+          dataIndex: "organization",
+          key: "organization",
+        },
+        {
           title: "负责人",
           dataIndex: "personId",
           key: "personId",
           render: (personId) => (
             <span key={personId}>
               {users.find((user) => user.id === personId)?.name || "未知"}
+            </span>
+          ),
+        },
+        {
+          title: "创建时间",
+          dataIndex: "created",
+          key: "created",
+          render: (created) => (
+            <span key={created}>
+              {created ? dayjs(created).format("YYYY-MM-DD") : "无"}
             </span>
           ),
         },
