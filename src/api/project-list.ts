@@ -1,5 +1,6 @@
 import http, { ResponseData } from "./index";
 import { AxiosPromise } from "axios";
+import { Project, UserLogin, Users } from "utils/type";
 
 interface User {
   name: string;
@@ -7,18 +8,9 @@ interface User {
   token: string;
 }
 
-interface Project {
-  created?: number;
-  id: number;
-  name: string;
-  organization: string;
-  ownerId: number;
-  personId?: number;
-}
-
 export const getProject = (
   data: Pick<User, "name" | "personId">
-): AxiosPromise<ResponseData<Project>> => {
+): AxiosPromise<Project[]> => {
   return http.request({
     url: `/projects`,
     method: "get",
@@ -26,14 +18,14 @@ export const getProject = (
   });
 };
 
-export const getUsers = (): AxiosPromise<ResponseData<Project>> => {
+export const getUsers = (): AxiosPromise<Users> => {
   return http.request({
     url: "/users",
     method: "get",
   });
 };
 
-export const getMe = (token: string): AxiosPromise<ResponseData<User>> => {
+export const getMe = (token: string): AxiosPromise<UserLogin> => {
   return http.request({
     url: "/me",
     method: "get",

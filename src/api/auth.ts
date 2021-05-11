@@ -1,5 +1,5 @@
 import http, { ResponseData } from "./index";
-import { User } from "utils/type";
+import { UserLogin } from "utils/type";
 import { AxiosPromise } from "axios";
 
 // 请求携带参数
@@ -8,12 +8,7 @@ interface LoginInformation {
   password: string | number;
 }
 
-// 返回数据
-interface Response extends User {}
-
-export const userLogin = (
-  data: LoginInformation
-): AxiosPromise<ResponseData<Response>> => {
+export const userLogin = (data: LoginInformation): AxiosPromise<UserLogin> => {
   return http.request({
     url: `/login`,
     method: "POST",
@@ -26,7 +21,7 @@ export const userLogin = (
 
 export const userRegister = (
   data: LoginInformation
-): AxiosPromise<ResponseData> => {
+): AxiosPromise<UserLogin> => {
   return http.request({
     url: `/register`,
     method: "POST",

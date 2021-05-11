@@ -6,7 +6,6 @@ import { AuthenticatedApp } from "./antuenticatedApp";
 
 function App() {
   const { user } = useAuth();
-  console.log(user);
   return (
     <div className="App">
       {user ? (
@@ -14,8 +13,6 @@ function App() {
       ) : (
         <UnauthenticatedApp></UnauthenticatedApp>
       )}
-
-      {/*<ProjectListScreen />*/}
     </div>
   );
 }

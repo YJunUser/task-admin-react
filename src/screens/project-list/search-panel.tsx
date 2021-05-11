@@ -2,11 +2,11 @@
 /** @jsx jsx */
 import { Form, Input, Select } from "antd";
 import React from "react";
-import { User } from "utils/type";
+import { UserLogin } from "utils/type";
 import { jsx } from "@emotion/react";
 
 interface SearchPanelProps {
-  users: User[];
+  users: UserLogin[];
   param: {
     name: string;
     personId: string;

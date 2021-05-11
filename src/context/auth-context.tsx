@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, ReactNode } from "react";
 import * as auth from "auth-provider";
-import { User } from "utils/type";
+import { UserLogin } from "utils/type";
 import { getMe } from "../api/project-list";
 import { useMount } from "../utils/index";
 
@@ -17,14 +17,14 @@ const boostrapUser = async () => {
   if (token) {
     await getMe(token).then((res) => {
       const data = res.data;
-      user = data.user;
+      user = data;
     });
   }
   return user;
 };
 const AuthContext = React.createContext<
   | {
-      user: User | null;
+      user: UserLogin | null;
       login: (form: AuthForm) => Promise<void>;
       register: (form: AuthForm) => Promise<void>;
       logout: () => Promise<void>;
@@ -34,7 +34,7 @@ const AuthContext = React.createContext<
 AuthContext.displayName = "AuthContext";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserLogin | null>(null);
 
   const login = (form: AuthForm) => {
     return auth.login(form).then((user) => setUser(user));

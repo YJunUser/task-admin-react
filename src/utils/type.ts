@@ -1,9 +1,11 @@
-export interface User {
+// /login
+export interface UserLogin {
   id: number;
   name: string;
   token: string;
 }
 
+// /project
 export interface Project {
   created: number;
   id: number;
@@ -11,4 +13,12 @@ export interface Project {
   organization: string;
   ownerId: number;
   personId: number;
+}
+
+// /users
+export interface Users {
+  organization: string;
+  ownerId: number;
+  name: string;
+  id: number;
 }

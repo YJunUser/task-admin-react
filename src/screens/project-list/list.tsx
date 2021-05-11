@@ -1,15 +1,16 @@
-import { Table } from "antd";
+import { Table, TableProps } from "antd";
 import dayjs from "dayjs";
 import React from "react";
-import { User } from "utils/type";
+import { UserLogin } from "utils/type";
 import { Project } from "utils/type";
 
-interface ListProps {
+// 组件库的时候要这么用
+interface ListProps extends TableProps<Project> {
   list: Project[];
-  users: User[];
+  users: UserLogin[];
 }
 
-export const List = ({ list, users }: ListProps) => {
+export const List = ({ list, users, ...props }: ListProps) => {
   return (
     <Table
       pagination={false}
@@ -47,6 +48,7 @@ export const List = ({ list, users }: ListProps) => {
           ),
         },
       ]}
+      {...props}
     ></Table>
     // <table>
     //   <thead>
