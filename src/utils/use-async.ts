@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AxiosResponse, AxiosPromise } from "axios";
+import { AxiosPromise, AxiosResponse } from "axios";
 
 interface State<D> {
   error: Error | null; // 返回的错误
@@ -13,7 +13,15 @@ const defaultIntialState: State<null> = {
   stat: "idle",
 };
 
-export const useAsync = <D>(intial?: State<D>) => {
+const defualtConcfig = {
+  throwError: false,
+};
+
+export const useAsync = <D>(
+  intial?: State<D>,
+  intialConfig?: typeof defualtConcfig
+) => {
+  const config = { ...defualtConcfig, ...intialConfig };
   const [state, setState] = useState<State<D>>({
     ...intial,
     ...defaultIntialState,
@@ -44,13 +52,19 @@ export const useAsync = <D>(intial?: State<D>) => {
       stat: "loading",
     });
     return promise
-      .then((res) => {
+      .then((res: AxiosResponse<D>) => {
         setData(res.data);
         return res.data;
       })
       .catch((error) => {
+        console.log("hhh", error);
         setError(error);
-        return error;
+        // catch会消化异常，如果不主动抛出，外面是接受不到的
+        if (config.throwError) {
+          return Promise.reject(error);
+        } else {
+          return error; // 不抛出
+        }
       });
   };
 
@@ -58,6 +72,7 @@ export const useAsync = <D>(intial?: State<D>) => {
     isIdle: state.stat === "idle",
     isLoading: state.stat === "loading",
     isSuccess: state.stat === "success",
+    isError: state.stat === "error",
     ...state,
     run,
     setData,

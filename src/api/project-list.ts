@@ -18,14 +18,14 @@ export const getProject = (
   });
 };
 
-export const getUsers = (): AxiosPromise<Users> => {
+export const getUsers = (): AxiosPromise<ResponseData<Users>> => {
   return http.request({
     url: "/users",
     method: "get",
   });
 };
 
-export const getMe = (token: string): AxiosPromise<UserLogin> => {
+export const getMe = (token: string): AxiosPromise<ResponseData<UserLogin>> => {
   return http.request({
     url: "/me",
     method: "get",

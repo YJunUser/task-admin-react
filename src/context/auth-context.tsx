@@ -4,6 +4,8 @@ import * as auth from "auth-provider";
 import { UserLogin } from "utils/type";
 import { getMe } from "../api/project-list";
 import { useMount } from "../utils/index";
+import { useAsync } from "../utils/use-async";
+import { FullPageError, FullPageLoading } from "components/lib";
 
 interface AuthForm {
   username: string;
@@ -20,8 +22,9 @@ const boostrapUser = async () => {
       user = data;
     });
   }
-  return user;
+  return { data: user };
 };
+
 const AuthContext = React.createContext<
   | {
       user: UserLogin | null;
@@ -31,13 +34,25 @@ const AuthContext = React.createContext<
     }
   | undefined
 >(undefined);
+
 AuthContext.displayName = "AuthContext";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<UserLogin | null>(null);
+  // const [user, setUser] = useState<UserLogin | null>(null);
+  const {
+    data: user,
+    error,
+    isLoading,
+    isIdle,
+    isError,
+    run,
+    setData: setUser,
+  } = useAsync<UserLogin | null>(undefined);
 
   const login = (form: AuthForm) => {
-    return auth.login(form).then((user) => setUser(user));
+    return auth.login(form).then(async (user) => {
+      setUser(user);
+    });
   };
   const register = (form: AuthForm) => {
     return auth.register(form).then((user) => setUser(user));
@@ -46,9 +61,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return auth.logout().then((user) => setUser(null));
   };
 
+  // useMount(() => {
+  //   boostrapUser().then((user) => setUser(user));
+  // });
   useMount(() => {
-    boostrapUser().then((user) => setUser(user));
+    run(boostrapUser() as any);
   });
+
+  if (isError) {
+    return <FullPageError error={error}></FullPageError>;
+  }
+
+  if (isIdle || isLoading) {
+    return <FullPageLoading></FullPageLoading>;
+  }
 
   return (
     <AuthContext.Provider

@@ -1,4 +1,7 @@
 import styled from "@emotion/styled";
+import { Spin, Typography } from "antd";
+import React from "react";
+import { DevTools, loadServer } from "jira-dev-tool";
 
 export const Row = styled.div<{
   between?: boolean;
@@ -21,3 +24,23 @@ export const Row = styled.div<{
         : undefined};
   }
 `;
+
+const FullPage = styled.div`
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const FullPageLoading = () => (
+  <FullPage>
+    <Spin size={"large"}></Spin>
+  </FullPage>
+);
+
+export const FullPageError = ({ error }: { error: Error | null }) => (
+  <FullPage>
+    <Typography.Text type={"danger"}>{error?.message}</Typography.Text>
+    <DevTools></DevTools>
+  </FullPage>
+);

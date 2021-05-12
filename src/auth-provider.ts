@@ -14,7 +14,7 @@ export const handleUserResponse = (user: UserLogin) => {
 export const login = (data: { username: string; password: string }) => {
   return userLogin(data)
     .then((res) => {
-      const data = res.data;
+      const data = res.data.user;
       return handleUserResponse(data);
     })
     .catch((error) => Promise.reject(error));
@@ -39,7 +39,7 @@ export const login = (data: { username: string; password: string }) => {
 
 export const register = (data: { username: string; password: string }) => {
   return userRegister(data)
-    .then((res: any) => {
+    .then((res) => {
       const data = res.data.user;
       return handleUserResponse(data);
     })

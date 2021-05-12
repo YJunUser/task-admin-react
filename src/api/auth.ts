@@ -8,7 +8,9 @@ interface LoginInformation {
   password: string | number;
 }
 
-export const userLogin = (data: LoginInformation): AxiosPromise<UserLogin> => {
+export const userLogin = (
+  data: LoginInformation
+): AxiosPromise<ResponseData<UserLogin>> => {
   return http.request({
     url: `/login`,
     method: "POST",
@@ -21,7 +23,7 @@ export const userLogin = (data: LoginInformation): AxiosPromise<UserLogin> => {
 
 export const userRegister = (
   data: LoginInformation
-): AxiosPromise<UserLogin> => {
+): AxiosPromise<ResponseData<UserLogin>> => {
   return http.request({
     url: `/register`,
     method: "POST",
