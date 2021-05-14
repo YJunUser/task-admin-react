@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const isVoid = (value: unknown) =>
   value === undefined || value === null || value === "";
@@ -51,4 +51,33 @@ export const useArray = <T>(initialArray: T[]) => {
       setValue(copy);
     },
   };
+};
+
+export const useDocumentTitle = (
+  title: string,
+  keepUnMount: boolean = true
+) => {
+  // let oldTitle = document.title;
+  // useRef在组件整个生命周期都不会改变
+  const oldTitle = useRef(document.title).current;
+
+  useEffect(() => {
+    document.title = title;
+  });
+
+  // // 空数组代表只在最初渲染时执行一次，最初时oldTtile是旧Title，于是闭包把旧title保存起来了
+  // useEffect(() => {
+  //   return () => {
+  //     if (!keepUnMount) {
+  //       document.title = oldTitle;
+  //     }
+  //   };
+  // }, []);
+  useEffect(() => {
+    return () => {
+      if (!keepUnMount) {
+        document.title = oldTitle;
+      }
+    };
+  }, [keepUnMount, oldTitle]);
 };

@@ -2,8 +2,8 @@ import React, { FormEvent } from "react";
 import { useAuth } from "../context/auth-context";
 import { Form, Input } from "antd";
 import { LongButton } from "./index";
-import { useAsync } from "../utils/use-async";
-import { AxiosPromise } from "axios";
+import { useState, useEffect } from "react";
+import * as auth from "auth-provider";
 
 export const LoginScreen = ({
   onError,
@@ -22,17 +22,18 @@ export const LoginScreen = ({
   //     login({ username, password });
   //   };
 
-  const { run, isLoading } = useAsync(undefined, { throwError: true });
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (values: {
     username: string;
     password: string;
   }) => {
-    try {
-      await run(login(values) as any);
-    } catch (error) {
-      onError(error);
-    }
+    // try {
+    //   await run(login(values) as any);
+    // } catch (error) {
+    //   onError(error);
+    // }
+    login(values);
   };
 
   return (
@@ -50,7 +51,7 @@ export const LoginScreen = ({
         <Input placeholder="密码" type="password" id={"password"} />
       </Form.Item>
       <Form.Item>
-        <LongButton htmlType={"submit"} type={"primary"} loading={isLoading}>
+        <LongButton htmlType={"submit"} type={"primary"} loading={loading}>
           登录
         </LongButton>
       </Form.Item>

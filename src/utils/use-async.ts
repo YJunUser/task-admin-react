@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AxiosPromise, AxiosResponse } from "axios";
 
 interface State<D> {
@@ -42,6 +42,7 @@ export const useAsync = <D>(
       stat: "success",
     });
   };
+
   // AxiosPromise 是axios请求第一次返回的值，包含6个字段，其中data字段是我们需要的，泛型D表示data类型
   const run = (promise: AxiosPromise<D>) => {
     if (!promise || !promise.then) {
@@ -53,12 +54,16 @@ export const useAsync = <D>(
     });
     return promise
       .then((res: AxiosResponse<D>) => {
-        setData(res.data);
+        if (res) {
+          setData(res.data);
+        }
         return res.data;
       })
       .catch((error) => {
-        console.log("hhh", error);
-        setError(error);
+        if (error) {
+          setError(error);
+        }
+
         // catch会消化异常，如果不主动抛出，外面是接受不到的
         if (config.throwError) {
           return Promise.reject(error);
