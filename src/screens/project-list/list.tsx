@@ -1,6 +1,8 @@
 import { Table, TableProps } from "antd";
 import dayjs from "dayjs";
 import React from "react";
+// react-ro
+import { Link } from "react-router-dom";
 import { UserLogin } from "utils/type";
 import { Project } from "utils/type";
 
@@ -19,8 +21,10 @@ export const List = ({ list, users, ...props }: ListProps) => {
       columns={[
         {
           title: "名称",
-          dataIndex: "name",
           key: "name",
+          render: (value, project) => (
+            <Link to={String(project.id)}>{project.name}</Link>
+          ),
         },
         {
           title: "部门",
