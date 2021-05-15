@@ -58,7 +58,7 @@ export const useDocumentTitle = (
   keepUnMount: boolean = true
 ) => {
   // let oldTitle = document.title;
-  // useRef在组件整个生命周期都不会改变
+  // useRef来跨越渲染周期存储数据，而且对它修改也不会引起组件渲染
   const oldTitle = useRef(document.title).current;
 
   useEffect(() => {

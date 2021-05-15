@@ -8,17 +8,21 @@ import { Typography } from "antd";
 import { useProject } from "./project";
 import { useUser } from "./user";
 import { useDocumentTitle } from "../../utils/index";
+import { useUrlQueryParam } from "../../utils/url";
 
 export const ProjectListScreen = () => {
-  const [param, setParam] = useState({
-    name: "",
-    personId: "",
-  });
+  // 每次useUrlQueryParam中的reduce都创建了一个新的引用类型即param
+  const [param, setParam] = useUrlQueryParam(["name", "personId"]);
+
+  // useDebounce中的useEffect又依赖了param
+  // 于是就会一直重复渲染， 不要将引用类型作为依赖项, 基本类型和组件状态可以作为依赖
+  // 但useState中的state可以作为依赖项，因为state只有去用setState改变的时候react才会认为是更新了的
   const debouncedParam = useDebounce(param, 200);
   const { isLoading, list, error } = useProject(debouncedParam);
   const { users } = useUser();
 
   useDocumentTitle("项目列表", false);
+
   return (
     <Container>
       <h1>项目列表</h1>
@@ -34,3 +38,5 @@ export const ProjectListScreen = () => {
 const Container = styled.div`
   padding: 3.2rem;
 `;
+
+ProjectListScreen.whyDidYouRender = false;
