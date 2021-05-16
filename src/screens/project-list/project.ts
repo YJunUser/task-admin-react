@@ -3,13 +3,9 @@ import { useEffect } from "react";
 import { useAsync } from "utils/use-async";
 import { Project } from "../../utils/type";
 
-interface User {
-  name: string;
-  personId: string;
-  token: string;
-}
-
-export const useProject = (param: Pick<User, "name" | "personId">) => {
+export const useProject = (
+  param: Partial<Pick<Project, "name" | "personId">>
+) => {
   const { run, isLoading, data: list, error } = useAsync<Project[]>();
 
   useEffect(() => {

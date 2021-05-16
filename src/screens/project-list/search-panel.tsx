@@ -2,15 +2,14 @@
 /** @jsx jsx */
 import { Form, Input, Select } from "antd";
 import React from "react";
-import { UserLogin } from "utils/type";
+import { Project, UserLogin } from "utils/type";
 import { jsx } from "@emotion/react";
+import { UserSelect } from "components/user-select";
 
 interface SearchPanelProps {
   users: UserLogin[];
-  param: {
-    name: string;
-    personId: string;
-  };
+  // 加个Partial，
+  param: Partial<Pick<Project, "name" | "personId">>;
   setParam: (param: SearchPanelProps["param"]) => void;
 }
 
@@ -32,7 +31,7 @@ export const SearchPanel = ({ users, param, setParam }: SearchPanelProps) => {
         />
       </Form.Item>
       <Form.Item>
-        <Select
+        {/* <Select
           value={param.personId}
           onChange={(value) =>
             setParam({
@@ -47,7 +46,17 @@ export const SearchPanel = ({ users, param, setParam }: SearchPanelProps) => {
               {user.name}
             </Select.Option>
           ))}
-        </Select>
+        </Select> */}
+        <UserSelect
+          value={param.personId}
+          onChange={(value) =>
+            setParam({
+              ...param,
+              personId: value,
+            })
+          }
+          defaultOptionName="负责人"
+        ></UserSelect>
       </Form.Item>
     </Form>
   );
