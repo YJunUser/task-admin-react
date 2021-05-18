@@ -51,8 +51,6 @@ class HttpRequest {
 
     instance.interceptors.response.use(
       async (res: AxiosResponse) => {
-        console.log(res);
-
         const { data } = res; // res的类型是AxiosResponse<any>，包含六个字段，其中data是服务端返回的数据
         const { code, msg } = data; // 通常服务端会将响应状态码、提示信息、数据等放到返回的数据中
         if (code === 401) {

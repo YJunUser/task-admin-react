@@ -13,6 +13,7 @@ export interface Project {
   organization: string;
   ownerId: number;
   personId: number;
+  pin: boolean;
 }
 
 // /users

@@ -1,24 +1,41 @@
 import { Table, TableProps } from "antd";
+import { Pin } from "components/pin";
 import dayjs from "dayjs";
 import React from "react";
 // react-ro
 import { Link } from "react-router-dom";
 import { UserLogin } from "utils/type";
 import { Project } from "utils/type";
+import { useEditProject } from "./project";
 
 // 组件库的时候要这么用
 interface ListProps extends TableProps<Project> {
   list: Project[];
   users: UserLogin[];
+  refresh: () => void;
 }
 
-export const List = ({ list, users, ...props }: ListProps) => {
+export const List = ({ list, users, refresh, ...props }: ListProps) => {
+  const { mutate } = useEditProject();
   return (
     <Table
       pagination={false}
       rowKey={(columns) => columns.id}
       dataSource={list}
       columns={[
+        {
+          title: <Pin checked={true} disabled={true}></Pin>,
+          key: "pin",
+          render: (value, project) => (
+            <Pin
+              checked={project.pin}
+              onCheckedChange={(pin) => {
+                // 注意 hook只能在最顶层调用，不能在这里 所以得返回一个mutate函数
+                mutate({ id: project.id, pin }).then(() => refresh());
+              }}
+            ></Pin>
+          ),
+        },
         {
           title: "名称",
           key: "name",

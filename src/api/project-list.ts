@@ -1,5 +1,5 @@
 import http, { ResponseData } from "./index";
-import { AxiosPromise } from "axios";
+import { AxiosPromise, AxiosResponse } from "axios";
 import { Project, UserLogin, Users } from "utils/type";
 
 export const getProject = (
@@ -12,7 +12,7 @@ export const getProject = (
   });
 };
 
-export const getUsers = (): AxiosPromise<ResponseData<Users>> => {
+export const getUsers = (): Promise<AxiosResponse<UserLogin[]>> => {
   return http.request({
     url: "/users",
     method: "get",
@@ -24,5 +24,25 @@ export const getMe = (token: string): AxiosPromise<ResponseData<UserLogin>> => {
     url: "/me",
     method: "get",
     params: { token },
+  });
+};
+
+export const editProject = (
+  params: Partial<Project>
+): Promise<AxiosResponse<ResponseData>> => {
+  return http.request({
+    url: `projects/${params.id}`,
+    method: "PATCH",
+    data: params,
+  });
+};
+
+export const addProject = (
+  params: Partial<Project>
+): Promise<AxiosResponse<ResponseData>> => {
+  return http.request({
+    url: `projects/${params.id}`,
+    method: "POST",
+    data: params,
   });
 };

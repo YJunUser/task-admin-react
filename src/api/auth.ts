@@ -1,6 +1,6 @@
 import http, { ResponseData } from "./index";
 import { UserLogin } from "utils/type";
-import { AxiosPromise } from "axios";
+import { AxiosPromise, AxiosResponse } from "axios";
 
 // 请求携带参数
 interface LoginInformation {
@@ -8,9 +8,10 @@ interface LoginInformation {
   password: string | number;
 }
 
+// Promise<AxiosResponse<T>> === AxiosPromise<T>
 export const userLogin = (
   data: LoginInformation
-): AxiosPromise<ResponseData<UserLogin>> => {
+): Promise<AxiosResponse<ResponseData<UserLogin>>> => {
   return http.request({
     url: `/login`,
     method: "POST",
