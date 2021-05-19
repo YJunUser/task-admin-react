@@ -13,10 +13,10 @@ interface ListProps extends TableProps<Project> {
   list: Project[];
   users: UserLogin[];
   refresh: () => void;
+  mutate: (params: Partial<Project>) => Promise<any>;
 }
 
-export const List = ({ list, users, refresh, ...props }: ListProps) => {
-  const { mutate } = useEditProject();
+export const List = ({ list, users, refresh, mutate, ...props }: ListProps) => {
   return (
     <Table
       pagination={false}

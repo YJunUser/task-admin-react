@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { AxiosPromise, AxiosResponse } from "axios";
 import { useMountedRef } from "./index";
 
@@ -34,64 +34,86 @@ export const useAsync = <D>(
 
   const mountedRef = useMountedRef();
 
-  const setError = (error: Error) => {
+  // const setError = (error: Error) => {
+  //   setState({
+  //     error,
+  //     data: null,
+  //     stat: "error",
+  //   });
+  // };
+
+  // const setData = (data: D) => {
+  //   setState({
+  //     error: null,
+  //     data,
+  //     stat: "success",
+  //   });
+  // };
+  const setError = useCallback((error: Error) => {
     setState({
       error,
       data: null,
       stat: "error",
     });
-  };
-
-  const setData = (data: D) => {
+  }, []);
+  const setData = useCallback((data: D) => {
     setState({
       error: null,
       data,
       stat: "success",
     });
-  };
+  }, []);
 
   // AxiosPromise 是axios请求第一次返回的值，包含6个字段，其中data字段是我们需要的，泛型D表示data类型 AxiosPromise extends Promise<AxiosResponse>
-  const run = (
-    promise: Promise<AxiosResponse<D>>,
-    runConfig?: { retry: () => Promise<AxiosResponse<D>> }
-  ) => {
-    if (!promise || !promise.then) {
-      throw new Error("请传入 Promise 类型");
-    }
-
-    setRetry(() => () => {
-      if (runConfig?.retry) {
-        run(runConfig?.retry(), runConfig);
+  // 需要非基本类型做依赖时， 用useCallback或者useMemo
+  // 自定义hook中，返回函数时绝大概率要用useCallback
+  const run = useCallback(
+    (
+      promise: Promise<AxiosResponse<D>>,
+      runConfig?: { retry: () => Promise<AxiosResponse<D>> }
+    ) => {
+      if (!promise || !promise.then) {
+        throw new Error("请传入 Promise 类型");
       }
-    });
 
-    setState({
-      ...state,
-      stat: "loading",
-    });
-    return promise
-      .then((res: AxiosResponse<D>) => {
-        if (res) {
-          // 防止在已卸载组件上赋值这种情况, 即将已请求到的数据赋值给已卸载的数据，这样会报错
-          if (mountedRef.current) {
-            setData(res.data);
-          }
-        }
-        return res.data;
-      })
-      .catch((error) => {
-        if (error) {
-          if (mountedRef.current) setError(error);
-        }
-
-        // catch会消化异常，如果不主动抛出，外面是接受不到的
-        if (config.throwError) {
-          return Promise.reject(error);
-        } else {
-          return error; // 不抛出
+      setRetry(() => () => {
+        if (runConfig?.retry) {
+          run(runConfig?.retry(), runConfig);
         }
       });
-  };
+      // 我们不能依赖state，这样会造成无限循环，state改变后依赖改变，引起重新渲染
+      // setState({
+      //   ...state,
+      //   stat: "loading",
+      // });
+      setState((preState) => ({ ...preState, stat: "loading" }));
+
+      return promise
+        .then((res: AxiosResponse<D>) => {
+          if (res) {
+            // 防止在已卸载组件上赋值这种情况, 即将已请求到的数据赋值给已卸载的数据，这样会报错
+            if (mountedRef.current) {
+              setData(res.data);
+            }
+          }
+          return res.data;
+        })
+        .catch((error) => {
+          if (error) {
+            if (mountedRef.current) setError(error);
+          }
+
+          // catch会消化异常，如果不主动抛出，外面是接受不到的
+          if (config.throwError) {
+            return Promise.reject(error);
+          } else {
+            return error; // 不抛出
+          }
+        });
+    },
+    [config.throwError, mountedRef, setData, setError, setState]
+    // 依赖中的函数必须也用useCallback去定义, 依赖改变了就重新执行useCallback， 你在run里setState了，state就会改变， 所以如果要在回调里使用state，请使用函数state方法
+  );
 
   return {
     isIdle: state.stat === "idle",

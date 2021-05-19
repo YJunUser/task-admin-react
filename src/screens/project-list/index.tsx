@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useDebounce } from "../../utils";
 import styled from "@emotion/styled";
 import { Typography } from "antd";
-import { useProject } from "./project";
+import { useEditProject, useProject } from "./project";
 import { useUser } from "./user";
 import { useDocumentTitle } from "../../utils/index";
 import { useUrlQueryParam } from "../../utils/url";
@@ -17,6 +17,7 @@ export const ProjectListScreen = () => {
   const [param, setParam] = useProjectsSearchParam();
   const { isLoading, list, error, retry } = useProject(useDebounce(param, 200));
   const { users } = useUser();
+  const { mutate } = useEditProject();
 
   return (
     <Container>
@@ -27,6 +28,7 @@ export const ProjectListScreen = () => {
       ) : null}
       <SearchPanel users={users || []} param={param} setParam={setParam} />
       <List
+        mutate={mutate}
         refresh={retry}
         users={users || []}
         list={list || []}
