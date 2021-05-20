@@ -10,9 +10,6 @@ export const useUser = () => {
   const { run, data: users } = useAsync<UserLogin[]>();
 
   useMount(() => {
-    // getUsers().then((res) => {
-    //   if (mountedRef.current) setUsers(res.data);
-    // });
     run(getUsers());
   });
   return {

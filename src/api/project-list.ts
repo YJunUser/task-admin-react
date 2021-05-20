@@ -2,9 +2,7 @@ import http, { ResponseData } from "./index";
 import { AxiosPromise, AxiosResponse } from "axios";
 import { Project, UserLogin, Users } from "utils/type";
 
-export const getProject = (
-  data: Partial<Pick<Project, "name" | "personId">>
-): AxiosPromise<Project[]> => {
+export const getProject = (data: Partial<Project>): AxiosPromise<Project[]> => {
   return http.request({
     url: `/projects`,
     method: "get",

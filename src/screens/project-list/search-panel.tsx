@@ -10,7 +10,7 @@ interface SearchPanelProps {
   users: UserLogin[];
   // 加个Partial，
   param: Partial<Pick<Project, "name" | "personId">>;
-  setParam: (param: SearchPanelProps["param"]) => void;
+  setParam: (param: SearchPanelProps["param"]) => void; // setParam就是返回void，但参数类型要对
 }
 
 export const SearchPanel = ({ users, param, setParam }: SearchPanelProps) => {

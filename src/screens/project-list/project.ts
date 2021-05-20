@@ -4,15 +4,13 @@ import { useAsync } from "utils/use-async";
 import { Project } from "../../utils/type";
 import { editProject, addProject } from "../../api/project-list";
 
-export const useProject = (
-  param: Partial<Pick<Project, "name" | "personId" | "pin">>
-) => {
+export const useProject = (param?: Partial<Project>) => {
   const { run, isLoading, data: list, error, retry } = useAsync<Project[]>();
 
-  const fetchProjects = useCallback(() => getProject(param), [param]);
+  const fetchProjects = useCallback(() => getProject(param || {}), [param]);
 
   useEffect(() => {
-    run(fetchProjects(), { retry: () => getProject(param) });
+    run(fetchProjects(), { retry: () => getProject(param || {}) });
   }, [param, run, fetchProjects]);
 
   return {

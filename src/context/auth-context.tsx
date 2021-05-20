@@ -6,6 +6,7 @@ import { getMe } from "../api/project-list";
 import { useMount } from "../utils/index";
 import { useAsync } from "../utils/use-async";
 import { FullPageError, FullPageLoading } from "components/lib";
+import { AxiosResponse, AxiosPromise } from "axios";
 
 interface AuthForm {
   username: string;
@@ -67,7 +68,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   //   boostrapUser().then((user) => setUser(user));
   // });
   useMount(() => {
-    run(boostrapUser() as any);
+    run(boostrapUser() as Promise<AxiosResponse>);
   });
 
   if (isError) {

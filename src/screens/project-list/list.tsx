@@ -1,4 +1,5 @@
-import { Table, TableProps } from "antd";
+import { Dropdown, Menu, Table, TableProps } from "antd";
+import { ButtonNoPadding } from "components/lib";
 import { Pin } from "components/pin";
 import dayjs from "dayjs";
 import React from "react";
@@ -14,9 +15,17 @@ interface ListProps extends TableProps<Project> {
   users: UserLogin[];
   refresh: () => void;
   mutate: (params: Partial<Project>) => Promise<any>;
+  setProjectModelOpen: (isOpen: boolean) => void;
 }
 
-export const List = ({ list, users, refresh, mutate, ...props }: ListProps) => {
+export const List = ({
+  list,
+  users,
+  refresh,
+  mutate,
+  setProjectModelOpen,
+  ...props
+}: ListProps) => {
   return (
     <Table
       pagination={false}
@@ -67,6 +76,28 @@ export const List = ({ list, users, refresh, mutate, ...props }: ListProps) => {
               {created ? dayjs(created).format("YYYY-MM-DD") : "无"}
             </span>
           ),
+        },
+        {
+          render(value, project) {
+            return (
+              <Dropdown
+                overlay={
+                  <Menu>
+                    <Menu.Item key={"edit"}>
+                      <ButtonNoPadding
+                        type={"link"}
+                        onClick={() => setProjectModelOpen(true)}
+                      >
+                        编辑
+                      </ButtonNoPadding>
+                    </Menu.Item>
+                  </Menu>
+                }
+              >
+                <ButtonNoPadding type={"link"}>...</ButtonNoPadding>
+              </Dropdown>
+            );
+          },
         },
       ]}
       {...props}

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 export const isVoid = (value: unknown) =>
   value === undefined || value === null || value === "";
@@ -19,7 +19,6 @@ export const cleanObject = (object: { [key: string]: unknown }) => {
 export const useMount = (callback: () => void) => {
   useEffect(() => {
     callback();
-    // 依赖项里加上callback会无限循环,和useCallback及useMemo有关
     // eslint-disable-next-line  react-hooks/exhaustive-deps
   }, []);
 };
