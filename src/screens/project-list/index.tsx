@@ -11,22 +11,26 @@ import { useDocumentTitle } from "../../utils/index";
 import { useUrlQueryParam } from "../../utils/url";
 import { useProjectsSearchParam } from "./util";
 import { Row } from "components/lib";
+import { useDispatch } from "react-redux";
+import { projectListActions } from "screens/project-list/project-list.slice";
 
-export const ProjectListScreen = (props: {
-  setProjectModelOpen: (isOpen: boolean) => void;
-}) => {
+export const ProjectListScreen = () => {
   useDocumentTitle("项目列表", false);
 
   const [param, setParam] = useProjectsSearchParam();
   const { isLoading, list, error, retry } = useProject(useDebounce(param, 200));
   const { users } = useUser();
   const { mutate } = useEditProject();
+  const dispatch = useDispatch();
 
   return (
     <Container>
       <Row between={true}>
         <h1>项目列表</h1>
-        <Button type={"link"} onClick={() => props.setProjectModelOpen(true)}>
+        <Button
+          type={"link"}
+          onClick={() => dispatch(projectListActions.openProjectModal())}
+        >
           创建项目
         </Button>
       </Row>
@@ -36,7 +40,6 @@ export const ProjectListScreen = (props: {
       ) : null}
       <SearchPanel users={users || []} param={param} setParam={setParam} />
       <List
-        setProjectModelOpen={props.setProjectModelOpen}
         mutate={mutate}
         refresh={retry}
         users={users || []}

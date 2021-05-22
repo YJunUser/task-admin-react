@@ -3,10 +3,11 @@ import { Button, Divider, List, Popover, Typography } from "antd";
 import React from "react";
 import { useProject } from "screens/project-list/project";
 import { ButtonNoPadding } from "./lib";
+import { useDispatch } from "react-redux";
+import { projectListActions } from "screens/project-list/project-list.slice";
 
-export const ProjectPopover = (props: {
-  setProjectModelOpen: (isOpen: boolean) => void;
-}) => {
+export const ProjectPopover = () => {
+  const dispatch = useDispatch();
   // 注意 这里传空对象会造成无限循环，useProject每次渲染都会执行的
   const { list: projects, isLoading } = useProject();
   const pinnedProjects = projects?.filter((project) => project.pin);
@@ -23,7 +24,7 @@ export const ProjectPopover = (props: {
       <Divider></Divider>
       <ButtonNoPadding
         type={"link"}
-        onClick={() => props.setProjectModelOpen(true)}
+        onClick={() => dispatch(projectListActions.openProjectModal())}
       >
         创建项目
       </ButtonNoPadding>

@@ -9,23 +9,20 @@ import { UserLogin } from "utils/type";
 import { Project } from "utils/type";
 import { useEditProject } from "./project";
 
+import { useDispatch } from "react-redux";
+import { projectListActions } from "screens/project-list/project-list.slice";
+
 // 组件库的时候要这么用
 interface ListProps extends TableProps<Project> {
   list: Project[];
   users: UserLogin[];
   refresh: () => void;
   mutate: (params: Partial<Project>) => Promise<any>;
-  setProjectModelOpen: (isOpen: boolean) => void;
 }
 
-export const List = ({
-  list,
-  users,
-  refresh,
-  mutate,
-  setProjectModelOpen,
-  ...props
-}: ListProps) => {
+export const List = ({ list, users, refresh, mutate, ...props }: ListProps) => {
+  const dipatch = useDispatch();
+
   return (
     <Table
       pagination={false}
@@ -86,7 +83,9 @@ export const List = ({
                     <Menu.Item key={"edit"}>
                       <ButtonNoPadding
                         type={"link"}
-                        onClick={() => setProjectModelOpen(true)}
+                        onClick={() =>
+                          dipatch(projectListActions.openProjectModal())
+                        }
                       >
                         编辑
                       </ButtonNoPadding>
