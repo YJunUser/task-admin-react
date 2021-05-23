@@ -4,6 +4,7 @@ import { Form, Input } from "antd";
 import { LongButton } from "./index";
 import { useState, useEffect } from "react";
 import * as auth from "auth-provider";
+import { useDispatch } from "react-redux";
 
 export const LoginScreen = ({
   onError,
@@ -11,6 +12,7 @@ export const LoginScreen = ({
   onError: (error: Error | null) => void;
 }) => {
   const { user, login } = useAuth();
+  const dispatch = useDispatch();
 
   //   // HTMLFormElement extends Element
   //   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
