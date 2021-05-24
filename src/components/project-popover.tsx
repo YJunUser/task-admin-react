@@ -3,12 +3,12 @@ import { Button, Divider, List, Popover, Typography } from "antd";
 import React from "react";
 import { useProject } from "screens/project-list/project";
 import { ButtonNoPadding } from "./lib";
+import { useProjectModal } from "../screens/project-list/util";
 
-export const ProjectPopover = (props: {
-  setProjectModelOpen: (isOpen: boolean) => void;
-}) => {
+export const ProjectPopover = () => {
+  const { open } = useProjectModal();
   // 注意 这里传空对象会造成无限循环，useProject每次渲染都会执行的
-  const { list: projects, isLoading } = useProject();
+  const { data: projects, isLoading } = useProject();
   const pinnedProjects = projects?.filter((project) => project.pin);
   const content = (
     <ContentContainer>
@@ -21,10 +21,7 @@ export const ProjectPopover = (props: {
         ))}
       </List>
       <Divider></Divider>
-      <ButtonNoPadding
-        type={"link"}
-        onClick={() => props.setProjectModelOpen(true)}
-      >
+      <ButtonNoPadding type={"link"} onClick={open}>
         创建项目
       </ButtonNoPadding>
     </ContentContainer>

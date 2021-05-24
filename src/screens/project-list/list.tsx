@@ -8,24 +8,22 @@ import { Link } from "react-router-dom";
 import { UserLogin } from "utils/type";
 import { Project } from "utils/type";
 import { useEditProject } from "./project";
+import { useProjectModal } from "./util";
 
 // 组件库的时候要这么用
 interface ListProps extends TableProps<Project> {
   list: Project[];
   users: UserLogin[];
-  refresh: () => void;
-  mutate: (params: Partial<Project>) => Promise<any>;
-  setProjectModelOpen: (isOpen: boolean) => void;
 }
 
-export const List = ({
-  list,
-  users,
-  refresh,
-  mutate,
-  setProjectModelOpen,
-  ...props
-}: ListProps) => {
+export const List = ({ list, users, ...props }: ListProps) => {
+  const { mutate } = useEditProject();
+  const { open, startEdit } = useProjectModal();
+
+  const pinProject = ({ id, pin }: { id: number; pin: boolean }) =>
+    mutate({ id, pin });
+  const editProject = ({ id }: { id: number }) => startEdit(id);
+
   return (
     <Table
       pagination={false}
@@ -39,8 +37,7 @@ export const List = ({
             <Pin
               checked={project.pin}
               onCheckedChange={(pin) => {
-                // 注意 hook只能在最顶层调用，不能在这里 所以得返回一个mutate函数
-                mutate({ id: project.id, pin }).then(() => refresh());
+                pinProject({ id: project.id, pin: pin });
               }}
             ></Pin>
           ),
@@ -83,14 +80,13 @@ export const List = ({
               <Dropdown
                 overlay={
                   <Menu>
-                    <Menu.Item key={"edit"}>
-                      <ButtonNoPadding
-                        type={"link"}
-                        onClick={() => setProjectModelOpen(true)}
-                      >
-                        编辑
-                      </ButtonNoPadding>
+                    <Menu.Item
+                      key={"edit"}
+                      onClick={() => editProject({ id: project.id })}
+                    >
+                      编辑
                     </Menu.Item>
+                    <Menu.Item key={"delete"}>删除</Menu.Item>
                   </Menu>
                 }
               >

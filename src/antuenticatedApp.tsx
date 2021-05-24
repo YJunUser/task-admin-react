@@ -9,27 +9,21 @@ import { Navigate, Route, Routes } from "react-router";
 import { BrowserRouter as Router } from "react-router-dom";
 import { ProjectScreen } from "screens/project";
 import { resetRoute } from "utils";
-import { useState } from "react";
 import { ProjectModel } from "./screens/project-list/project-model";
 import { ProjectPopover } from "components/project-popover";
 import { ButtonNoPadding } from "./components/lib";
 
 // 有状态的组件没有渲染，有渲染的组件没有状态
 export const AuthenticatedApp = () => {
-  const [projectModelOpen, setProjectModelOpen] = useState(false);
   return (
     <Container>
-      <PageHeader setProjectModelOpen={setProjectModelOpen}></PageHeader>
-      <Main>
-        <Router>
+      <Router>
+        <PageHeader></PageHeader>
+        <Main>
           <Routes>
             <Route
               path={"/projects"}
-              element={
-                <ProjectListScreen
-                  setProjectModelOpen={setProjectModelOpen}
-                ></ProjectListScreen>
-              }
+              element={<ProjectListScreen></ProjectListScreen>}
             ></Route>
             <Route
               path={"/projects/:projectsId/*"}
@@ -37,20 +31,15 @@ export const AuthenticatedApp = () => {
             ></Route>
             <Navigate to={window.location.pathname + "/projects"}></Navigate>
           </Routes>
-        </Router>
-      </Main>
-      <ProjectModel
-        projectModelOpen={projectModelOpen}
-        onClose={() => setProjectModelOpen(false)}
-      ></ProjectModel>
+        </Main>
+        <ProjectModel></ProjectModel>
+      </Router>
     </Container>
   );
 };
 
 // 注意setState的参数 参数没问题就行
-const PageHeader = (props: {
-  setProjectModelOpen: (isOpen: boolean) => void;
-}) => {
+const PageHeader = () => {
   return (
     <Header between={true}>
       <HeaderLeft gap={true}>
@@ -62,9 +51,7 @@ const PageHeader = (props: {
           ></SoftwareLogo>
         </ButtonNoPadding>
         <span>我的</span>
-        <ProjectPopover
-          setProjectModelOpen={props.setProjectModelOpen}
-        ></ProjectPopover>
+        <ProjectPopover></ProjectPopover>
       </HeaderLeft>
       <HeaderRight>
         <User></User>

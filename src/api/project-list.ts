@@ -10,6 +10,15 @@ export const getProject = (data: Partial<Project>): AxiosPromise<Project[]> => {
   });
 };
 
+export const getProjectById = (
+  id?: number
+): Promise<AxiosResponse<Project>> => {
+  return http.request({
+    url: `/projects/${id}`,
+    method: "get",
+  });
+};
+
 export const getUsers = (): Promise<AxiosResponse<UserLogin[]>> => {
   return http.request({
     url: "/users",
@@ -39,7 +48,7 @@ export const addProject = (
   params: Partial<Project>
 ): Promise<AxiosResponse<ResponseData>> => {
   return http.request({
-    url: `projects/${params.id}`,
+    url: `projects`,
     method: "POST",
     data: params,
   });

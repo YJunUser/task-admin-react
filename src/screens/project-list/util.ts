@@ -1,5 +1,7 @@
 import { useMemo } from "react";
 import { useUrlQueryParam } from "utils/url";
+import { useProjectById } from "./project";
+import { editProject } from "../../api/project-list";
 
 export const useProjectsSearchParam = () => {
   // 每次useUrlQueryParam中的reduce都创建了一个新的引用类型即param
@@ -22,4 +24,43 @@ export const useProjectsSearchParam = () => {
     [param]
   );
   return [memorized, setParam] as const;
+};
+
+export const useProjectModal = () => {
+  const [
+    { projectCreate, editingProjectId },
+    setProjectCreate,
+  ] = useUrlQueryParam(["projectCreate", "editingProjectId"]);
+
+  // const [{ editingProjectId }, setEditingProjectId] = useUrlQueryParam([
+  //   "editingProjectId",
+  // ]);
+
+  const { data: editingProject, isLoading } = useProjectById(
+    Number(editingProjectId)
+  );
+
+  const open = () =>
+    setProjectCreate({ projectCreate: true, editingProjectId: undefined });
+
+  const close = () => {
+    // setEditingProjectId({ editingProjectId: undefined });
+    setProjectCreate({
+      projectCreate: undefined,
+      editingProjectId: undefined,
+    });
+  };
+
+  const startEdit = (id: number) =>
+    setProjectCreate({ editingProjectId: id, projectCreate: undefined });
+
+  //   return [projectCreate === "true", open, close] as const; // 返回tuple加个as const 返回tuple可以随便命名， 一般数据小于四个用tuple， 因为tuple有顺序，再多就用对象吧
+  return {
+    projectModalOpen: projectCreate === "true" || Boolean(editingProject),
+    open,
+    close,
+    startEdit,
+    editingProject,
+    isLoading,
+  };
 };
