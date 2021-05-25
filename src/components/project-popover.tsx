@@ -9,6 +9,7 @@ export const ProjectPopover = () => {
   const { open } = useProjectModal();
   // 注意 这里传空对象会造成无限循环，useProject每次渲染都会执行的
   const { data: projects, isLoading } = useProject();
+
   const pinnedProjects = projects?.filter((project) => project.pin);
   const content = (
     <ContentContainer>
