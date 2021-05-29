@@ -7,8 +7,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { UserLogin } from "utils/type";
 import { Project } from "utils/type";
-import { useEditProject } from "./project";
-import { useProjectModal } from "./util";
+import { useEditProject, useDeleteProject } from "./project";
+import { useProjectModal, useProjectsQueryKey } from "./util";
 
 // 组件库的时候要这么用
 interface ListProps extends TableProps<Project> {
@@ -17,12 +17,16 @@ interface ListProps extends TableProps<Project> {
 }
 
 export const List = ({ list, users, ...props }: ListProps) => {
-  const { mutate } = useEditProject();
+  const { mutate } = useEditProject(useProjectsQueryKey());
+
   const { open, startEdit } = useProjectModal();
+
+  const { mutate: deleteMutate } = useDeleteProject(useProjectsQueryKey());
 
   const pinProject = ({ id, pin }: { id: number; pin: boolean }) =>
     mutate({ id, pin });
   const editProject = ({ id }: { id: number }) => startEdit(id);
+  const deleteProject = ({ id }: { id: number }) => deleteMutate({ id });
 
   return (
     <Table
@@ -86,7 +90,12 @@ export const List = ({ list, users, ...props }: ListProps) => {
                     >
                       编辑
                     </Menu.Item>
-                    <Menu.Item key={"delete"}>删除</Menu.Item>
+                    <Menu.Item
+                      key={"delete"}
+                      onClick={() => deleteProject({ id: project.id })}
+                    >
+                      删除
+                    </Menu.Item>
                   </Menu>
                 }
               >

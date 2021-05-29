@@ -3,6 +3,11 @@ import { useUrlQueryParam } from "utils/url";
 import { useProjectById } from "./project";
 import { editProject } from "../../api/project-list";
 
+export const useProjectsQueryKey = () => {
+  const [params] = useProjectsSearchParam();
+  return ["projects", params];
+};
+
 export const useProjectsSearchParam = () => {
   // 每次useUrlQueryParam中的reduce都创建了一个新的引用类型即param
   // useDebounce中的useEffect又依赖了param
@@ -44,7 +49,6 @@ export const useProjectModal = () => {
     setProjectCreate({ projectCreate: true, editingProjectId: undefined });
 
   const close = () => {
-    // setEditingProjectId({ editingProjectId: undefined });
     setProjectCreate({
       projectCreate: undefined,
       editingProjectId: undefined,

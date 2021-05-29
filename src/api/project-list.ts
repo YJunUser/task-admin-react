@@ -53,3 +53,12 @@ export const addProject = (
     data: params,
   });
 };
+
+export const deleteProject = (
+  params: Partial<Project>
+): Promise<AxiosResponse<ResponseData>> => {
+  return http.request({
+    url: `projects/${params.id}`,
+    method: "DELETE",
+  });
+};

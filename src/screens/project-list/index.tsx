@@ -43,4 +43,4 @@ const Container = styled.div`
   padding: 3.2rem;
 `;
 
-ProjectListScreen.whyDidYouRender = false;
+ProjectListScreen.whyDidYouRender = true;

@@ -4,7 +4,11 @@ import { useAsync } from "utils/use-async";
 import { Project } from "../../utils/type";
 import { useProjectsSearchParam } from "./util";
 import { useSearchParams } from "react-router-dom";
-import { useEditConfig } from "../../utils/use-optimistic-options";
+import {
+  useEditConfig,
+  useAddConfig,
+  useDeleteConfig,
+} from "../../utils/use-optimistic-options";
 import {
   editProject,
   addProject,
@@ -15,7 +19,10 @@ import {
   QueryClient,
   useQueryClient,
   useMutation,
+  QueryKey,
 } from "react-query";
+import { Mutation } from "react-query/types/core/mutation";
+import { deleteProject } from "../../api/project-list";
 
 export const useProject = (param?: Partial<Project>) => {
   // const { run, isLoading, data: list, error, retry } = useAsync<Project[]>();
@@ -41,10 +48,11 @@ export const useProject = (param?: Partial<Project>) => {
   });
 };
 
-export const useEditProject = () => {
-  const queryClient = useQueryClient();
-  const [searchParams] = useProjectsSearchParam();
-  const queryKey = ["projects", searchParams];
+export const useEditProject = (queryKey: QueryKey) => {
+  // 不能在这里用hook了，因为useEditProject被用在了条件语句中，而条件语句中是不能使用hook的， 这样去掉之后useEditProject就变成了一个纯函数
+  // const [searchParam] = useSearchParams()
+  // const queryKey = ['projects', searchParam]
+
   return useMutation(
     // variables is an object that mutate will pass to your mutationFn
     async (params: Partial<Project>) => {
@@ -77,17 +85,19 @@ export const useEditProject = () => {
   );
 };
 
-export const useAddProject = () => {
+export const useAddProject = (queryKey: QueryKey) => {
+  return useMutation(async (params: Partial<Project>) => {
+    const res = await addProject(params);
+    return res.data;
+  }, useAddConfig(queryKey));
+};
+
+export const useDeleteProject = (queryKey: QueryKey) => {
   const queryClient = useQueryClient();
-  return useMutation(
-    async (params: Partial<Project>) => {
-      const res = await addProject(params);
-      return res.data;
-    },
-    {
-      onSuccess: () => queryClient.invalidateQueries("projects"),
-    }
-  );
+  return useMutation(async ({ id }: { id: number }) => {
+    const res = await deleteProject({ id });
+    return res.data;
+  }, useDeleteConfig(queryKey));
 };
 
 export const useProjectById = (id?: number) => {

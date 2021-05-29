@@ -1,7 +1,7 @@
 import { Button, Drawer, Form, Input, Spin, Typography } from "antd";
 import { UserSelect } from "components/user-select";
 import React from "react";
-import { useProjectModal } from "./util";
+import { useProjectModal, useProjectsQueryKey } from "./util";
 import { useEditProject, useAddProject } from "./project";
 import { useForm } from "antd/lib/form/Form";
 import { useEffect } from "react";
@@ -17,9 +17,12 @@ export const ProjectModel = () => {
 
   const title = editingProject ? "编辑项目" : "创建项目";
 
+  // 不要再条件中使用hook。。
   const useMutateProject = editingProject ? useEditProject : useAddProject;
 
-  const { mutateAsync, error, isLoading: mutateLoading } = useMutateProject();
+  const { mutateAsync, error, isLoading: mutateLoading } = useMutateProject(
+    useProjectsQueryKey()
+  );
   const [form] = useForm();
 
   // 注意 视图并不会自己更新的， 所有东西都需要手动去做
@@ -105,3 +108,5 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
+ProjectModel.whyDidYouRender = true;
